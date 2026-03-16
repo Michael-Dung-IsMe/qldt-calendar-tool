@@ -7,13 +7,16 @@ tmp_db_test.py
 # --- Backend (Python) ---
 backend/.env
 backend/.env.test
-backend/__pycache__/
-backend/.pytest_cache/
 backend/local_oauth_files/
 backend/schedule.csv
-backend/src/__pycache__
 backend/tests/test_data/
-backend/tests/__pycache__/
+
+# Python cache
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
 
 # --- Frontend (Next.js/Node) ---
 frontend/node_modules/
