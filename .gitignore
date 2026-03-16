@@ -11,6 +11,7 @@ backend/__pycache__/
 backend/.pytest_cache/
 backend/local_oauth_files/
 backend/schedule.csv
+backend/src/__pycache__
 backend/tests/test_data/
 backend/tests/__pycache__/
 
