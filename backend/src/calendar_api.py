@@ -1,4 +1,4 @@
-import os.path
+import os
 import datetime
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -7,9 +7,16 @@ from googleapiclient.discovery import build
 from dateutil import parser
 import random
 
+# =================================
+# CẤU HÌNH CHO CHẠY TRÊN LOCAL
+# =================================
+CREDENTIALS_PATH ='./local_oauth_files/credentials.json'
+TOKEN_PATH = './local_oauth_files/token.json'
+
 class GoogleCalendarManager:
-    def __init__(self, credentials_path='credentials.json', token_path='token.json'):
+    def __init__(self, refresh_token=None, credentials_path=CREDENTIALS_PATH, token_path=TOKEN_PATH):
         self.scopes = ['https://www.googleapis.com/auth/calendar']
+        self.refresh_token = refresh_token
         self.credentials_path = credentials_path
         self.token_path = token_path
         self.service = self._authenticate()
@@ -17,17 +24,37 @@ class GoogleCalendarManager:
     def _authenticate(self):
         """Xử lý đăng nhập Google OAuth2"""
         creds = None
-        if os.path.exists(self.token_path):
+        
+        if self.refresh_token:
+            # Ưu tiên sử dụng refresh_token từ database
+            client_id = os.environ.get("GOOGLE_CLIENT_ID")
+            client_secret = os.environ.get("GOOGLE_CLIENT_SECRET")
+            
+            creds = Credentials(
+                token=None,
+                refresh_token=self.refresh_token,
+                token_uri="https://oauth2.googleapis.com/token",
+                client_id=client_id,
+                client_secret=client_secret,
+                scopes=self.scopes
+            )
+        elif os.path.exists(self.token_path):
+            # Fallback về token local (nếu test)
             creds = Credentials.from_authorized_user_file(self.token_path, self.scopes)
         
         if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
+            if creds and creds.refresh_token:
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(self.credentials_path, self.scopes)
                 creds = flow.run_local_server(port=0)
-            with open(self.token_path, 'w') as token:
-                token.write(creds.to_json())
+            
+            # Chỉ ghi lại token nếu đang dùng phương pháp local
+            if not self.refresh_token:
+                # Đảm bảo thư mục tồn tại
+                os.makedirs(os.path.dirname(self.token_path), exist_ok=True)
+                with open(self.token_path, 'w') as token:
+                    token.write(creds.to_json())
         
         return build('calendar', 'v3', credentials=creds)
 

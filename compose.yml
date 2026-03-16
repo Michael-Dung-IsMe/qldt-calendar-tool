@@ -1,0 +1,47 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: qldt-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      # Tránh mount ngược node_modules hoặc __pycache__ nếu có từ local vào container
+      - /app/__pycache__
+    env_file:
+      - ./backend/.env
+    environment:
+      - FRONTEND_URL=http://localhost:3000
+      - PYTHONUNBUFFERED=1
+    # Dùng lệnh này để bật chế độ reload khi phát triển
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: qldt-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      # Giữ node_modules bên trong container, không bị ghi đè bởi local
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - ./frontend/.env.local
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - backend
+    # Chế độ dev cho frontend
+    command: npm run dev
+    restart: always
+
+networks:
+  default:
+    name: qldt-network
