@@ -1,5 +1,5 @@
 # Sử dụng image chính thức của Playwright (bao gồm Python và các thư viện hệ thống cho browser)
-FROM mcr.microsoft.com/playwright/python:v1.50.0-noble
+FROM mcr.microsoft.com/playwright/python:v1.58.0-noble
 
 # Thiết lập thư mục làm việc trong container
 WORKDIR /app
