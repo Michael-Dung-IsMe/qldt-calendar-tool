@@ -67,7 +67,8 @@ export default function Home() {
       client_id: clientId,
       redirect_uri: redirectUri,
       response_type: "code",
-      scope: "https://www.googleapis.com/auth/calendar",
+      scope:
+        "openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar.events",
       access_type: "offline",
       state: id,
       prompt: "consent",
