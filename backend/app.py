@@ -30,6 +30,10 @@ app.add_middleware(
 # Mount the auth router
 app.include_router(auth_router)
 
+@app.get("/")
+async def root():
+    return {"status": "ok", "message": "PTIT Calendar Sync API is running"}
+
 class ScrapeRequest(BaseModel):
     student_id: str
     password: str
