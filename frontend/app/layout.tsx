@@ -10,6 +10,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "PTIT Schedule Sync",
   description: "Công cụ đồng bộ lịch học từ QLDT PTIT sang Google Calendar",
+  verification: {
+    google: "1DwHwIzxQtGQilKfW7YRV617HZjf18z6xRqeR7fMv4o",
+  },
 };
 
 export default function RootLayout({
@@ -19,9 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
-      </body>
+      <body className={`${inter.variable} font-sans antialiased`}>{children}</body>
     </html>
   );
 }
