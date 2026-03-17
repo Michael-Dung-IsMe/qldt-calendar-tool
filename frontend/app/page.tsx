@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -199,15 +200,25 @@ export default function Home() {
                 <p className="text-sm text-zinc-500">PTIT Schedule tool</p>
               </div>
             </div>
-            <a
-              href="https://github.com/Michael-Dung-IsMe/qldt-calendar-tool"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center space-x-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 bg-zinc-50 hover:bg-zinc-100 px-4 py-2 rounded-full border border-zinc-200 transition-colors"
-            >
-              <Github className="w-4 h-4" />
-              <span className="hidden sm:inline">Star on GitHub</span>
-            </a>
+            <div className="flex items-center space-x-3">
+              <Link
+                href="/privacy"
+                className="flex items-center space-x-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 bg-zinc-50 hover:bg-zinc-100 px-4 py-2 rounded-full border border-zinc-200 transition-colors"
+                title="Google Cloud Console Privacy Policy Requirement"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span className="hidden sm:inline">Privacy Policy</span>
+              </Link>
+              <a
+                href="https://github.com/Michael-Dung-IsMe/qldt-calendar-tool"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 bg-zinc-50 hover:bg-zinc-100 px-4 py-2 rounded-full border border-zinc-200 transition-colors"
+              >
+                <Github className="w-4 h-4" />
+                <span className="hidden sm:inline">Star on GitHub</span>
+              </a>
+            </div>
           </div>
 
           {/* Hero & Intro */}
