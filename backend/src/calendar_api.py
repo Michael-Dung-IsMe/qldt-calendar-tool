@@ -15,7 +15,12 @@ TOKEN_PATH = './local_oauth_files/token.json'
 
 class GoogleCalendarManager:
     def __init__(self, refresh_token=None, credentials_path=CREDENTIALS_PATH, token_path=TOKEN_PATH):
-        self.scopes = ['https://www.googleapis.com/auth/calendar']
+        self.scopes = [
+            'openid', 
+            'https://www.googleapis.com/auth/userinfo.email', 
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/calendar.events',
+        ]
         self.refresh_token = refresh_token
         self.credentials_path = credentials_path
         self.token_path = token_path
