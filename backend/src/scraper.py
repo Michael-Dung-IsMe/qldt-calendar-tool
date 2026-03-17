@@ -106,9 +106,27 @@ class PTITScraper:
         """Hàm chính: Điều phối toàn bộ quá trình browser -> cào dữ liệu."""
         events = []
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=self.headless)
-            context = browser.new_context()
+            browser = p.chromium.launch(
+                headless=self.headless,
+                args=[
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-dev-shm-usage", # Quan trọng nhất để giải quyết vấn đề RAM trên Docker/Render
+                    "--disable-gpu",
+                    "--disable-software-rasterizer",
+                    "--disable-extensions",
+                    "--js-flags=--max-old-space-size=256" # Giới hạn RAM của V8 Javascript engine
+                ]
+            )
+            # Thiết lập viewport nhỏ và chặn file không cần thiết để tiết kiệm bộ nhớ
+            context = browser.new_context(viewport={'width': 800, 'height': 600})
             page = context.new_page()
+
+            # Chặn TẢI HÌNH ẢNH, STYLESHEETS và FONTS để tiết kiệm lượng RAM rất lớn
+            page.route(
+                "**/*",
+                lambda route: route.abort() if route.request.resource_type in ["image", "stylesheet", "font", "media"] else route.continue_()
+            )
 
             for _ in range(3):
                 print(f"--- Đang truy cập {self.base_url} ---")

@@ -1,48 +1,19 @@
-# Sử dụng Python image chính thức
-FROM python:3.13-slim
+# Sử dụng image chính thức của Playwright (bao gồm Python và các thư viện hệ thống cho browser)
+FROM mcr.microsoft.com/playwright/python:v1.42.0-jammy
 
-# Thiết lập thư mục làm việc
+# Thiết lập thư mục làm việc trong container
 WORKDIR /app
 
-# Cài đặt các thư viện hệ thống cần thiết cho Playwright
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget \
-    gnupg \
-    libglib2.0-0 \
-    libnss3 \
-    libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libdbus-1-3 \
-    libxcb1 \
-    libxkbcommon0 \
-    libx11-6 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxext6 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libpango-1.0-0 \
-    libcairo2 \
-    asound2 \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements và cài đặt dependencies
+# Copy file requirements và cài đặt
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Cài đặt trình duyệt cho Playwright (chỉ Chromium để tối ưu dung lượng)
-RUN playwright install chromium
-RUN playwright install-deps chromium
-
-# Copy toàn bộ mã nguồn backend
+# Copy toàn bộ mã nguồn vào container
 COPY . .
 
-# Mở port 8000
+# Expose port mà FastAPI sẽ chạy (Render thường dùng port 10000 theo mặc định, nhưng ta cứ mở 8000)
 EXPOSE 8000
 
-# Lệnh chạy server
+# Lệnh để khởi chạy FastAPI bằng Uvicorn
+# Render sẽ tự động gán biến môi trường PORT, nên cấu hình host 0.0.0.0 là bắt buộc
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
